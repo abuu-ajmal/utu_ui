@@ -1,10 +1,7 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  {
-   path:'home',
-   loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)
-  },
+ 
   {
     path: 'pages',
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
@@ -19,7 +16,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'auth',
     pathMatch: 'full'
   },
   {
