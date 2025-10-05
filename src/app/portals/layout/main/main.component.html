@@ -1,0 +1,16 @@
+<div class="h-screen flex flex-col">
+  <!-- Header -->
+  <app-portal-header class="flex-none"></app-portal-header>
+
+  <!-- Main Content (fixed size, will cut off if larger) -->
+  <main class="flex-grow relative overflow-hidden">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+ <footer class="flex-none bg-blue-900 text-white p-2 mt-4">
+    <div class="text-center">
+      © 2025 ICT (Ministry of Health Zanzibar). All rights reserved.
+    </div>
+  </footer>
+</div>

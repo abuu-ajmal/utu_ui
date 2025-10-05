@@ -47,22 +47,13 @@ export class SidebarComponent {
   navigation!: any;
 
   navItems: NavItem[] = [
-
-    {
+     {
       id: 'dashboard',
-      type: 'group',
+      type: 'Single',  // Changed from 'group' to 'link'
       name: 'Dashboard',
       icon: 'dashboard',
       permission: 'View Dashboard',
-      children: [
-        {
-          type: 'link',
-          name: 'Vaccine Dashboard',
-          link: '/pages/dashboard',
-          permission: 'View Dashboard',
-
-        }
-      ]
+      link: '/pages/dashboard'
     },
 
     {
@@ -70,27 +61,21 @@ export class SidebarComponent {
       type: 'group',
       name: 'Config Users & Audit',
       icon: 'person',
-      permission: ['User Management', 'View Permission', 'System Audit'],
+      permission: ['View User', 'View Permission', 'View Role'],
       children: [
-        {
-          type: 'link',
-          name: 'System Audits',
-          link: '/pages/users/permission',
-          permission: 'System Audit',
 
-        },
         {
           type: 'link',
           name: 'Manage Users',
-          link: '/pages/users/manageuser',
-          permission: 'User Management',
+          link: '/pages/users',
+          permission: 'View User',
 
         },
         {
           type: 'link',
           name: 'Manage Roles',
           link: '/pages/users/role-permission',
-          permission: 'User Management',
+          permission: 'View Role',
 
         },
         {
@@ -102,51 +87,85 @@ export class SidebarComponent {
         },
       ]
     },
+
     {
-      id: 'config',
+      id: 'accountant',
       type: 'group',
-      icon: 'settings',
       name: 'System Configuration',
-      permission: 'Setup Modules',
+      icon: 'menu',
+      // permission: 'Accountant Module',
+      permission: 'Accountant Module',
       children: [
         {
           type: 'link',
-          name: 'View Country',
-          link: '/pages/config/country',
-          permission: 'View Country',
+          name: 'Sources',
+          link: '/pages/accounts/source',
+          permission: 'Accountant Module',
 
         },
         {
           type: 'link',
-          name: 'Location',
-          link: '/pages/config/location',
-          permission: 'View Location',
-        },
-        // {
-        //   type: 'link',
-        //   name: 'Tab Panel',
-        //   link: '/pages/navigation/tab-panel',
-        //   permission: 'View Country',
+          name: 'Source Type',
+          link: '/pages/accounts/sourceType',
+          permission: 'Accountant Module',
 
-        // },
+        },
+        {
+          type: 'link',
+          name: 'Category',
+          link: '/pages/accounts/category',
+          permission: 'Accountant Module',
+
+        },
+         {
+          type: 'link',
+          name: 'Sub Category',
+          link: '/pages/accounts/subcategory',
+          permission: 'View Sub Category',
+
+        },
+        {
+          type: 'link',
+          name: 'Document Type',
+          link: '/pages/accounts/documentCategory',
+          permission: 'Accountant Module',
+
+        },
+
       ]
     },
 
+     {
+      id: 'dodument1',
+      type: 'Single',  // Changed from 'group' to 'link'
+      name: 'Document',
+      icon: 'document',
+      permission: 'View Document Form',
+      link: '/pages/accounts/documentForm',
+    },
+
     {
-      id: 'profile',
+      id: 'report2',
       type: 'group',
-      name: 'User Profile',
-      icon: 'menu',
-      permission: 'Setup Management',
+      name: 'Report',
+      icon: 'report',
+      permission: 'View Report',
       children: [
+
         {
           type: 'link',
-          name: 'Talent Profile',
-          link: '/pages/user-profile/talent-profile',
+          name: 'Range Report',
+          link: '/pages/accounts/report',
+          permission: 'View Report',
 
-          permission: 'View Permission',
+        },
+        {
+          type: 'link',
+          name: 'Search Report',
+          link: '/pages/accounts/parameter-report',
+          permission: 'View Report',
 
-        }
+        },
       ]
     },
 
@@ -157,29 +176,28 @@ export class SidebarComponent {
   constructor(public permission: PermissionService) {}
 
   ngOnInit() {
-    this.navItems.forEach(navItem => {
+    this.navItems.forEach((navItem) => {
       this.navItemLinks.push(navItem);
 
       if (navItem.children) {
-        this.navItemLinks = this.navItemLinks.concat(navItem.children as NavItem[]);
+        this.navItemLinks = this.navItemLinks.concat(
+          navItem.children as NavItem[]
+        );
         this.updateMenu();
       }
     });
     this._activateLink();
     this.router.events
-      .pipe(
-        filter(event => event instanceof NavigationEnd)
-      )
+      .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe(() => {
         this._activateLink();
         this.updateMenu();
-      })
-    ;
+      });
   }
 
   private _activateLink() {
     const activeLink = this.navItemLinks.find(
-      navItem => navItem.link === this.location.path()
+      (navItem) => navItem.link === this.location.path()
     );
 
     if (activeLink) {
@@ -196,7 +214,9 @@ export class SidebarComponent {
   hasPermission(action: string | string[]): boolean {
     if (Array.isArray(action)) {
       // If it's an array, check if the user has permission for at least one action
-      return action.some(permission => this.permission.parmissionMatched([permission.trim()]));
+      return action.some((permission) =>
+        this.permission.parmissionMatched([permission.trim()])
+      );
     } else {
       // If it's a string, check if the user has permission for that action
       return this.permission.parmissionMatched([action.trim()]);
@@ -204,69 +224,83 @@ export class SidebarComponent {
   }
 
   // Function to filter out menu items based on permissions
-filterMenuByPermissions(menu: Array<NavItem>): Array<NavItem> {
-  return menu
-    .map(group => {
-      // Check if the group itself has a permission and if it's valid
-      if (group.permission && !this.hasPermission(group.permission)) {
-        // If the group's permission is not met, exclude it entirely
-        return null;
-      }
+  filterMenuByPermissions(menu: Array<NavItem>): Array<NavItem> {
+    return menu
+      .map((group) => {
+        // Check if the group itself has a permission and if it's valid
+        if (group.permission && !this.hasPermission(group.permission)) {
+          // If the group's permission is not met, exclude it entirely
+          return null;
+        }
 
-      return {
-        ...group,
-        children: group.children ? this.filterChildrenByPermissions(group.children) : []
-      };
-    })
-    .filter(group => group !== null && group.children.length > 0) as NavItem[];
-}
+        return {
+          ...group,
+          children: group.children
+            ? this.filterChildrenByPermissions(group.children)
+            : [],
+        };
+      })
+      .filter(
+        (group) => group !== null && group.id !== null
+      ) as NavItem[];
+  }
 
-// Recursive function to filter children based on permissions
-filterChildrenByPermissions(children: Array<NavItem>): Array<NavItem> {
-  return children
-    .map(item => ({
-      ...item,
-      children: item.children ? this.filterChildrenByPermissions(item.children) : []
-    }))
-    .filter(item => {
-      if (!item.permission) {
-        // If the menu item does not have a permission specified, include it in the filtered menu
-        return true;
-      }
-      return this.hasPermission(item.permission);
-    });
-}
+  // Recursive function to filter children based on permissions
+  filterChildrenByPermissions(children: Array<NavItem>): Array<NavItem> {
+    return children
+      .map((item) => ({
+        ...item,
+        children: item.children
+          ? this.filterChildrenByPermissions(item.children)
+          : [],
+      }))
+      .filter((item) => {
+        if (!item.permission) {
+          // If the menu item does not have a permission specified, include it in the filtered menu
+          return true;
+        }
+        return this.hasPermission(item.permission);
+      });
+  }
 
+  // // Function to filter out menu items based on permissions
+  // filterMenuByPermissions(menu: Array<NavItem>): Array<NavItem> {
+  //   return menu.map(group => ({
+  //     ...group,
+  //     children: group.children ? this.filterChildrenByPermissions(group.children) : []
+  //   })).filter(group => group.children.length > 0);
+  // }
 
-// // Function to filter out menu items based on permissions
-// filterMenuByPermissions(menu: Array<NavItem>): Array<NavItem> {
-//   return menu.map(group => ({
-//     ...group,
-//     children: group.children ? this.filterChildrenByPermissions(group.children) : []
-//   })).filter(group => group.children.length > 0);
-// }
-
-// // Recursive function to filter children based on permissions
-// filterChildrenByPermissions(children: Array<NavItem>): Array<NavItem> {
-//   return children
-//     .map(item => ({
-//       ...item,
-//       children: item.children ? this.filterChildrenByPermissions(item.children) : []
-//     }))
-//     .filter(item => {
-//       if (!item.permission) {
-//         // If the menu item does not have a permission specified, include it in the filtered menu
-//         return true;
-//       }
-//       return this.hasPermission(item.permission);
-//     });
-// }
-
+  // // Recursive function to filter children based on permissions
+  // filterChildrenByPermissions(children: Array<NavItem>): Array<NavItem> {
+  //   return children
+  //     .map(item => ({
+  //       ...item,
+  //       children: item.children ? this.filterChildrenByPermissions(item.children) : []
+  //     }))
+  //     .filter(item => {
+  //       if (!item.permission) {
+  //         // If the menu item does not have a permission specified, include it in the filtered menu
+  //         return true;
+  //       }
+  //       return this.hasPermission(item.permission);
+  //     });
+  // }
 
   // Function to update the menu based on user permissions
   updateMenu(): void {
     this.navItems = this.filterMenuByPermissions(this.navItems);
   }
+
+           // USER ROLES
+           public getUserRole(): any {
+            return localStorage.getItem('roles');
+
+          }
+
+          public get isStaff(): boolean {
+            return this.getUserRole() === 'ROLE STAFF';
+          }
 
 
   //====================================== code zangu mwisho hapa ============================
