@@ -13,6 +13,10 @@ const routes: Routes = [
     title: 'Country',
     loadComponent: () => import('./country/country-board/country-board.component').then(c => c.CountryBoardComponent)
   },
+  {
+    path:'professional',
+    loadComponent:()=> import('./professional/view-professional/view-professional.component').then(c=>c.ViewProfessionalComponent)
+  }
 ];
 
 @NgModule({

@@ -1,0 +1,63 @@
+<mat-card class="p-6 shadow-lg rounded-xl bg-white dark:bg-gray-900">
+  <!-- Title -->
+  <h2
+    class="text-2xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-6 border-b pb-2"
+  >
+    {{ professionData ? 'Update Professional' : 'Add Professional' }}
+  </h2>
+
+  <form [formGroup]="professionForm" class="space-y-6">
+    <!-- Group for Title -->
+    <div formGroupName="title" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- English Title -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Title (English)</mat-label>
+        <input matInput formControlName="en" />
+        <mat-error
+          *ngIf="
+            professionForm.get('title.en')?.touched &&
+            professionForm.get('title.en')?.invalid
+          "
+        >
+          English title is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Kiswahili Title -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Title (Kiswahili)</mat-label>
+        <input matInput formControlName="sw" />
+        <mat-error
+          *ngIf="
+            professionForm.get('title.sw')?.touched &&
+            professionForm.get('title.sw')?.invalid
+          "
+        >
+          Kiswahili title is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end space-x-3 pt-4 border-t">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        class="px-6 py-2 font-semibold"
+        (click)="professionData ? updateProfession() : saveProfession()"
+      >
+        {{ professionData ? 'Update' : 'Save' }}
+      </button>
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        class="px-6 py-2 font-semibold"
+        (click)="onClose()"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</mat-card>

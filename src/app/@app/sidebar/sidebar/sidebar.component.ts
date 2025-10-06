@@ -94,13 +94,13 @@ export class SidebarComponent {
       name: 'System Configuration',
       icon: 'menu',
       // permission: 'Accountant Module',
-      permission: 'Accountant Module',
+      permission: 'Setup Management',
       children: [
         {
           type: 'link',
-          name: 'Sources',
-          link: '/pages/accounts/source',
-          permission: 'Accountant Module',
+          name: 'Professional',
+          link: '/pages/config/professional',
+          permission: 'View Professional Title',
 
         },
         {
