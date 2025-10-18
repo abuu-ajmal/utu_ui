@@ -1,0 +1,115 @@
+<div class="flex justify-center items-center min-h-screen bg-gray-50 p-2">
+  <div class="bg-white w-full max-w-x5l p-7 rounded-2xl shadow-lg overflow-y-auto max-h-[90vh]" style="margin-top: -100px;">
+
+    <!-- Title Section -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-blue-900 mb-2">User Registration</h1>
+      <p class="text-gray-600 text-sm">
+        Please fill out all required fields to complete your registration.
+      </p>
+    </div>
+
+    <!-- Stepper Form -->
+    <mat-horizontal-stepper [linear]="true" #stepper class="mt-4">
+
+      <!-- Step 1: Personal Info -->
+      <mat-step [stepControl]="personalFormGroup">
+        <form [formGroup]="personalFormGroup">
+          <ng-template matStepLabel>Personal Information</ng-template>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Full Name *</mat-label>
+              <input matInput formControlName="full_name" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Date of Birth *</mat-label>
+              <input matInput type="date" formControlName="dob" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full md:col-span-2">
+              <mat-label>Gender *</mat-label>
+              <mat-select formControlName="gender" required>
+                <mat-option value="Male">Male</mat-option>
+                <mat-option value="Female">Female</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="flex justify-end mt-6">
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: Contact Info -->
+      <mat-step [stepControl]="contactFormGroup">
+        <form [formGroup]="contactFormGroup">
+          <ng-template matStepLabel>Contact Information</ng-template>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Phone *</mat-label>
+              <input matInput formControlName="phone" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full md:col-span-2">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="address" />
+            </mat-form-field>
+          </div>
+
+          <div class="flex justify-between mt-6">
+            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 3: Role & Terms -->
+      <mat-step [stepControl]="finalFormGroup">
+        <form [formGroup]="finalFormGroup">
+          <ng-template matStepLabel>Role & Terms</ng-template>
+
+          <mat-form-field appearance="outline" class="w-full md:col-span-2">
+            <mat-label>Role *</mat-label>
+            <mat-select formControlName="role" required>
+              <mat-option value="client">Client</mat-option>
+              <mat-option value="professional">Professional</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="p-4 border rounded-lg bg-gray-50 max-h-[200px] overflow-y-auto my-4">
+            <p class="text-gray-700 text-sm leading-relaxed">
+              By registering, you agree to provide accurate and truthful information.
+              All data will be used according to our privacy policy. Please read carefully before submitting.
+            </p>
+          </div>
+
+          <mat-checkbox formControlName="terms_accepted">
+            I agree to the terms and conditions
+          </mat-checkbox>
+
+          <div class="flex justify-between mt-6">
+            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!finalFormGroup.valid"
+              (click)="onSubmit()"
+            >
+              Finish
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+    </mat-horizontal-stepper>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+<mat-card class="p-6 shadow-lg rounded-xl bg-white dark:bg-gray-900">
+  <!-- Title -->
+  <h2
+    class="text-2xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-6 border-b pb-2"
+  >
+    {{ specializationData
+        ? (currentLanguage === 'en' ? 'Update Specialization' : 'Hariri Utaalamu')
+        : (currentLanguage === 'en' ? 'Add Specialization' : 'Ongeza Utaalamu') }}
+  </h2>
+
+  <form [formGroup]="specializationForm" class="space-y-6">
+    <!-- Professional Title Select -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>{{ currentLanguage === 'en' ? 'Professional Title' : 'Cheo cha Kitaalamu' }}</mat-label>
+      <mat-select formControlName="professional_title_id">
+        <mat-option *ngFor="let title of professionalTitles" [value]="title.professional_title_id">
+          {{ currentLanguage === 'en' ? title.title.en : title.title.sw }}
+        </mat-option>
+      </mat-select>
+      <mat-error
+        *ngIf="specializationForm.get('professional_title_id')?.touched && specializationForm.get('professional_title_id')?.invalid"
+      >
+        {{ currentLanguage === 'en' ? 'Title is required' : 'Cheo kinahitajika' }}
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Specialization Name -->
+    <div formGroupName="name" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ currentLanguage === 'en' ? 'Name (English)' : 'Jina (Kiingereza)' }}</mat-label>
+        <input matInput formControlName="en" />
+        <mat-error
+          *ngIf="specializationForm.get('name.en')?.touched && specializationForm.get('name.en')?.invalid"
+        >
+          {{ currentLanguage === 'en' ? 'English name is required' : 'Jina la Kiingereza linahitajika' }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>{{ currentLanguage === 'en' ? 'Name (Kiswahili)' : 'Jina (Kiswahili)' }}</mat-label>
+        <input matInput formControlName="sw" />
+        <mat-error
+          *ngIf="specializationForm.get('name.sw')?.touched && specializationForm.get('name.sw')?.invalid"
+        >
+          {{ currentLanguage === 'en' ? 'Kiswahili name is required' : 'Jina la Kiswahili linahitajika' }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end space-x-3 pt-4 border-t">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        class="px-6 py-2 font-semibold"
+        (click)="specializationData ? updateSpecialization() : saveSpecialization()"
+      >
+        {{ specializationData
+            ? (currentLanguage === 'en' ? 'Update' : 'Hariri')
+            : (currentLanguage === 'en' ? 'Save' : 'Hifadhi') }}
+      </button>
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        class="px-6 py-2 font-semibold"
+        (click)="onClose()"
+      >
+        {{ currentLanguage === 'en' ? 'Cancel' : 'Ghairi' }}
+      </button>
+    </div>
+  </form>
+</mat-card>
+

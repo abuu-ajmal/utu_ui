@@ -9,14 +9,14 @@
       <emr-h-divider class="mt-8">vis</emr-h-divider>
       <form class="flex flex-col pt-3 md:pt-8" [formGroup]="loginForm">
         <mat-form-field>
-          <mat-label>Email</mat-label>
-          <input type="email" formControlName="email" matInput placeholder="Ex. vaccine@mohz.go.tz">
+          <mat-label>Email or Phone</mat-label>
+          <input type="text" formControlName="login" matInput >
           <button type="button" mat-icon-button matSuffix class="mr-1">
             <mat-icon class="font-icon">email</mat-icon>
           </button>
-          <mat-error *ngIf="loginForm.controls.email.touched && loginForm.controls.email.invalid">
-            <span *ngIf="loginForm.controls.email.errors.required">This field is mandatory</span>
-            <span *ngIf="loginForm.controls.email.errors.pattern">This field is invalid (must be an email)</span>
+          <mat-error *ngIf="loginForm.controls.login.touched && loginForm.controls.login.invalid">
+            <span *ngIf="loginForm.controls.login.errors.required">This field is mandatory</span>
+            <span *ngIf="loginForm.controls.login.errors.pattern">This field is invalid (must be an login)</span>
           </mat-error>
         </mat-form-field>
         <mat-form-field class="mt-2">

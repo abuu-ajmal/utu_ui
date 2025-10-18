@@ -3,7 +3,9 @@
   <h2
     class="text-2xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-6 border-b pb-2"
   >
-    {{ professionData ? 'Update Professional' : 'Add Professional' }}
+    {{ professionData
+        ? (currentLanguage === 'en' ? 'Update Professional' : 'Hariri Cheo cha Kitaalamu')
+        : (currentLanguage === 'en' ? 'Add Professional' : 'Ongeza Cheo cha Kitaalamu') }}
   </h2>
 
   <form [formGroup]="professionForm" class="space-y-6">
@@ -11,29 +13,23 @@
     <div formGroupName="title" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <!-- English Title -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Title (English)</mat-label>
+        <mat-label>{{ currentLanguage === 'en' ? 'Title (English)' : 'Cheo (Kiingereza)' }}</mat-label>
         <input matInput formControlName="en" />
         <mat-error
-          *ngIf="
-            professionForm.get('title.en')?.touched &&
-            professionForm.get('title.en')?.invalid
-          "
+          *ngIf="professionForm.get('title.en')?.touched && professionForm.get('title.en')?.invalid"
         >
-          English title is required
+          {{ currentLanguage === 'en' ? 'English title is required' : 'Cheo cha Kiingereza kinahitajika' }}
         </mat-error>
       </mat-form-field>
 
       <!-- Kiswahili Title -->
       <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Title (Kiswahili)</mat-label>
+        <mat-label>{{ currentLanguage === 'en' ? 'Title (Kiswahili)' : 'Cheo (Kiswahili)' }}</mat-label>
         <input matInput formControlName="sw" />
         <mat-error
-          *ngIf="
-            professionForm.get('title.sw')?.touched &&
-            professionForm.get('title.sw')?.invalid
-          "
+          *ngIf="professionForm.get('title.sw')?.touched && professionForm.get('title.sw')?.invalid"
         >
-          Kiswahili title is required
+          {{ currentLanguage === 'en' ? 'Kiswahili title is required' : 'Cheo cha Kiswahili kinahitajika' }}
         </mat-error>
       </mat-form-field>
     </div>
@@ -47,7 +43,9 @@
         class="px-6 py-2 font-semibold"
         (click)="professionData ? updateProfession() : saveProfession()"
       >
-        {{ professionData ? 'Update' : 'Save' }}
+        {{ professionData
+            ? (currentLanguage === 'en' ? 'Update' : 'Hariri')
+            : (currentLanguage === 'en' ? 'Save' : 'Hifadhi') }}
       </button>
       <button
         mat-stroked-button
@@ -56,7 +54,7 @@
         class="px-6 py-2 font-semibold"
         (click)="onClose()"
       >
-        Cancel
+        {{ currentLanguage === 'en' ? 'Cancel' : 'Ghairi' }}
       </button>
     </div>
   </form>

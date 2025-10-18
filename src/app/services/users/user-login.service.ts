@@ -6,9 +6,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
-
-  private baseUrl: string = `${environment.baseUrl}`;
+export class UserLoginService {
+ private baseUrl: string = `${environment.baseUrl}`;
 
   constructor(private http: HttpClient) {}
 

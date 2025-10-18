@@ -9,11 +9,14 @@ import {
 } from '@angular/core';
 import { getState } from '@ngrx/signals';
 import { GlobalState, GlobalStore } from '@elementar/components';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-screen-loader',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './screen-loader.component.html',
   styleUrl: './screen-loader.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

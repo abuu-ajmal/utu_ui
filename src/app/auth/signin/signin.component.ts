@@ -52,7 +52,7 @@ export class SigninComponent implements OnInit {
 
   public loginFormData(){
     this.loginForm = this.formBuilder.group({
-      email: new FormControl(null, [Validators.required, Validators.pattern(GlobalConstants.emailRegex)]),
+      login: new FormControl(null, [Validators.required]),
       password: new FormControl(null, [Validators.required]),
     });
   }
@@ -71,11 +71,11 @@ export class SigninComponent implements OnInit {
         } else {
           if(response.statusCode != 401 && response.data.statusCode == 200){
             localStorage.setItem("token", `Bearer ${response.data.token}`);
-            if(response.data.login_status === '1'){
+            if(response.data.login_status === true){
               this.authService.setPermissions(response.data.permissions);
               localStorage.setItem("user_id", response.data.user_id);
               localStorage.setItem("full_name", response.data.full_name);
-              localStorage.setItem("email", response.data.email);
+              localStorage.setItem("login", response.data.login);
               localStorage.setItem("workingStationID", response.data.working_station_id);
               localStorage.setItem("workingStationName", response.data.working_station_name);
               // localStorage.setItem("roles", response.data.roles.name);
@@ -101,22 +101,22 @@ export class SigninComponent implements OnInit {
             }
             else{
               console.log('change password')
-              // const Toast = Swal.mixin({
-              //   toast: true,
-              //   position: "top-end",
-              //   showConfirmButton: false,
-              //   timer: 3000,
-              //   timerProgressBar: true,
-              //   didOpen: (toast) => {
-              //     toast.onmouseenter = Swal.stopTimer;
-              //     toast.onmouseleave = Swal.resumeTimer;
-              //   }
-              // });
-              // Toast.fire({
-              //   icon: "warning",
-              //   title: "Please change the password first"
-              // });
-              // this.route.navigateByUrl("auth/authfirst")
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+                }
+              });
+              Toast.fire({
+                icon: "warning",
+                title: "Please change the password first"
+              });
+              this.route.navigateByUrl("home/change-password")
             }
 
           }else{

@@ -13,31 +13,31 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ProfessionalService } from '../../../../services/system-configuration/professional.service';
-import { AddProfessionalComponent } from '../add-professional/add-professional.component';
+import { EducationlevelService } from '../../../../services/system-configuration/educationlevel.service';
+import { AddEducationlevelComponent } from '../add-educationlevel/add-educationlevel.component';
+
 
 @Component({
-  selector: 'app-view-professional',
+ selector: 'app-view-educationlevel',
   standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
     MatIcon,
-    MatTooltip,
     MatSlideToggleModule,
     FormsModule,
-    MatButton,
+
     EmrSegmentedModule,
   ],
-  templateUrl: './view-professional.component.html',
-  styleUrls: ['./view-professional.component.scss'],
+ templateUrl: './view-educationlevel.component.html',
+  styleUrl: './view-educationlevel.component.scss'
 })
-export class ViewProfessionalComponent implements OnInit, OnDestroy {
+export class ViewEducationLevelComponent implements OnInit, OnDestroy {
   private readonly onDestroy = new Subject<void>();
 
   // Table Columns
-  displayedColumns: string[] = ['id', 'title', 'action'];
+  displayedColumns: string[] = ['id', 'level', 'action'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   // Language (default English)
@@ -46,24 +46,24 @@ export class ViewProfessionalComponent implements OnInit, OnDestroy {
   // Translations for English and Kiswahili
   translations = {
     en: {
-      title: 'Professionals',
-      addProfessional: 'Add Professional',
-      updateProfessional: 'Update Professional',
-      searchPlaceholder: 'Search Professional...',
+      title: 'Education Levels',
+      addEducationLevel: 'Add Education Level',
+      updateEducationLevel: 'Update Education Level',
+      searchPlaceholder: 'Search Education Level...',
       columnId: 'ID',
-      columnTitle: 'Title',
+      columnLevel: 'Level',
       columnAction: 'Action',
-      noData: 'No Professionals Found',
+      noData: 'No Education Levels Found',
     },
     sw: {
-      title: 'Wataalamu',
-      addProfessional: 'Ongeza Mtaalamu',
-      updateProfessional: 'Hariri Mtaalamu',
-      searchPlaceholder: 'Tafuta Mtaalamu...',
+      title: 'Ngazi za Elimu',
+      addEducationLevel: 'Ongeza Ngazi ya Elimu',
+      updateEducationLevel: 'Hariri Ngazi ya Elimu',
+      searchPlaceholder: 'Tafuta Ngazi ya Elimu...',
       columnId: 'Kitambulisho',
-      columnTitle: 'Kichwa',
+      columnLevel: 'Ngazi',
       columnAction: 'Kitendo',
-      noData: 'Hakuna Wataalamu Waliopatikana',
+      noData: 'Hakuna Ngazi za Elimu Zilizopatikana',
     },
   };
 
@@ -72,13 +72,13 @@ export class ViewProfessionalComponent implements OnInit, OnDestroy {
 
   constructor(
     public permission: PermissionService,
-    public proServices: ProfessionalService,
+    public eduLevelService: EducationlevelService,
     private route: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.getProfessional();
+    this.getEducationLevels();
   }
 
   ngOnDestroy(): void {
@@ -92,42 +92,10 @@ export class ViewProfessionalComponent implements OnInit, OnDestroy {
   }
 
   renew() {
-    this.getProfessional();
+    this.getEducationLevels();
   }
 
-  // Fetch Professional list
-getProfessional() {
-  this.proServices
-    .getAllProfessional()
-    .pipe(takeUntil(this.onDestroy))
-    .subscribe(
-      (response: any) => {
-        if (response.statusCode === 200) {
-          this.dataSource = new MatTableDataSource(response.data);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-
-          // Custom filter for nested title object
-          this.dataSource.filterPredicate = (data, filter) => {
-            const title = data.title?.[this.currentLanguage]?.toLowerCase() || '';
-            const id = String(data.id || '');
-            return title.includes(filter) || id.includes(filter);
-          };
-        } else if (response.statusCode === 401) {
-          this.route.navigateByUrl('/');
-          console.log(response.message);
-        }
-      },
-      (error) => {
-        this.route.navigateByUrl('/');
-        console.log('Failed to load professionals.');
-      }
-    );
-}
-
-
-  // Search filter
- applyFilter(event: Event) {
+applyFilter(event: Event) {
   const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
   this.dataSource.filter = filterValue;
 
@@ -136,9 +104,42 @@ getProfessional() {
   }
 }
 
+getEducationLevels() {
+  this.eduLevelService
+    .getAllEducationLevel()
+    .pipe(takeUntil(this.onDestroy))
+    .subscribe(
+      (response: any) => {
+        if (response.statusCode === 200 && response.success) {
+          this.dataSource = new MatTableDataSource(response.data);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
 
-  // Add new professional
-  addProfessional() {
+          // ✅ Custom filter for nested level translations
+          this.dataSource.filterPredicate = (data, filter) => {
+            const english = data.level?.en?.toLowerCase() || '';
+            const swahili = data.level?.sw?.toLowerCase() || '';
+            const id = String(data.id || '');
+            return (
+              english.includes(filter) ||
+              swahili.includes(filter) ||
+              id.includes(filter)
+            );
+          };
+        } else {
+          console.log('Failed to load education levels.');
+        }
+      },
+      (error) => {
+        console.log('Error fetching education levels:', error);
+        this.route.navigateByUrl('/');
+      }
+    );
+}
+
+
+  // Add new education level
+  addEducationLevel() {
     let config = new MatDialogConfig();
     config.disableClose = false;
     config.role = 'dialog';
@@ -147,15 +148,15 @@ getProfessional() {
     config.width = '850px';
     config.panelClass = 'full-screen-modal';
 
-    const dialogRef = this.dialog.open(AddProfessionalComponent, config);
+    const dialogRef = this.dialog.open(AddEducationlevelComponent, config);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.getProfessional();
+      this.getEducationLevels();
     });
   }
 
-  // Update existing professional
-  updateProfessional(data: any) {
+  // Update existing education level
+  updateEducationLevel(data: any) {
     let config = new MatDialogConfig();
     config.disableClose = false;
     config.role = 'dialog';
@@ -165,10 +166,10 @@ getProfessional() {
     config.panelClass = 'full-screen-modal';
     config.data = { data: data };
 
-    const dialogRef = this.dialog.open(AddProfessionalComponent, config);
+    const dialogRef = this.dialog.open(AddEducationlevelComponent, config);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.getProfessional();
+      this.getEducationLevels();
     });
   }
 }

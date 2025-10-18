@@ -13,14 +13,15 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { AddSpecializationComponent } from '../add-specialization/add-specialization.component';
 import { ProfessionalService } from '../../../../services/system-configuration/professional.service';
-import { AddProfessionalComponent } from '../add-professional/add-professional.component';
+import { SpecializationService } from '../../../../services/system-configuration/specialization.service';
 
 @Component({
-  selector: 'app-view-professional',
+  selector: 'app-view-specialization',
   standalone: true,
   imports: [
-    CommonModule,
+     CommonModule,
     MatTableModule,
     MatPaginatorModule,
     MatIcon,
@@ -30,42 +31,42 @@ import { AddProfessionalComponent } from '../add-professional/add-professional.c
     MatButton,
     EmrSegmentedModule,
   ],
-  templateUrl: './view-professional.component.html',
-  styleUrls: ['./view-professional.component.scss'],
+  templateUrl: './view-specialization.component.html',
+  styleUrl: './view-specialization.component.scss'
 })
-export class ViewProfessionalComponent implements OnInit, OnDestroy {
+export class ViewSpecializationComponent implements OnInit, OnDestroy {
   private readonly onDestroy = new Subject<void>();
 
   // Table Columns
-  displayedColumns: string[] = ['id', 'title', 'action'];
-  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+ displayedColumns: string[] = ['id', 'specialization', 'title', 'action'];
+dataSource: MatTableDataSource<any> = new MatTableDataSource();
 
   // Language (default English)
   currentLanguage: 'en' | 'sw' = 'en';
 
   // Translations for English and Kiswahili
-  translations = {
-    en: {
-      title: 'Professionals',
-      addProfessional: 'Add Professional',
-      updateProfessional: 'Update Professional',
-      searchPlaceholder: 'Search Professional...',
-      columnId: 'ID',
-      columnTitle: 'Title',
-      columnAction: 'Action',
-      noData: 'No Professionals Found',
-    },
-    sw: {
-      title: 'Wataalamu',
-      addProfessional: 'Ongeza Mtaalamu',
-      updateProfessional: 'Hariri Mtaalamu',
-      searchPlaceholder: 'Tafuta Mtaalamu...',
-      columnId: 'Kitambulisho',
-      columnTitle: 'Kichwa',
-      columnAction: 'Kitendo',
-      noData: 'Hakuna Wataalamu Waliopatikana',
-    },
-  };
+ translations = {
+  en: {
+    title: 'Specialization',
+    addProfessional: 'Add Specialization Title',
+    searchPlaceholder: 'Search Specialization Title...',
+    columnId: 'ID',
+    columnTitle: 'Professional Title',
+    columnSpecialization: 'Specialization',
+    columnAction: 'Action',
+    noData: 'No Professional Titles Found',
+  },
+  sw: {
+    title: 'Vyeo vya Kitaaluma',
+    addProfessional: 'Ongeza Cheo cha Kitaaluma',
+    searchPlaceholder: 'Tafuta Cheo cha Kitaaluma...',
+    columnId: 'Kitambulisho',
+    columnTitle: 'Cheo cha Kitaaluma',
+    columnSpecialization: 'Utaalamu',
+    columnAction: 'Kitendo',
+    noData: 'Hakuna Vyeo vya Kitaaluma Vilivopatikana',
+  },
+};
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -73,12 +74,13 @@ export class ViewProfessionalComponent implements OnInit, OnDestroy {
   constructor(
     public permission: PermissionService,
     public proServices: ProfessionalService,
+    public speServices: SpecializationService,
     private route: Router,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.getProfessional();
+    this.getProfessionalTitles();
   }
 
   ngOnDestroy(): void {
@@ -92,37 +94,29 @@ export class ViewProfessionalComponent implements OnInit, OnDestroy {
   }
 
   renew() {
-    this.getProfessional();
+    this.getProfessionalTitles();
   }
 
-  // Fetch Professional list
-getProfessional() {
-  this.proServices
-    .getAllProfessional()
+getProfessionalTitles() {
+  this.speServices.getAllSpecialization() // replace with professional service if separate
     .pipe(takeUntil(this.onDestroy))
-    .subscribe(
-      (response: any) => {
-        if (response.statusCode === 200) {
-          this.dataSource = new MatTableDataSource(response.data);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
+    .subscribe((res: any) => {
+      if (res.statusCode === 200 && res.success) {
+        this.dataSource = new MatTableDataSource(res.data);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
 
-          // Custom filter for nested title object
-          this.dataSource.filterPredicate = (data, filter) => {
-            const title = data.title?.[this.currentLanguage]?.toLowerCase() || '';
-            const id = String(data.id || '');
-            return title.includes(filter) || id.includes(filter);
-          };
-        } else if (response.statusCode === 401) {
-          this.route.navigateByUrl('/');
-          console.log(response.message);
-        }
-      },
-      (error) => {
-        this.route.navigateByUrl('/');
-        console.log('Failed to load professionals.');
+        this.dataSource.filterPredicate = (data, filter) => {
+          const titleEn = data.title?.title?.en?.toLowerCase() || '';
+          const titleSw = data.title?.title?.sw?.toLowerCase() || '';
+          const specEn = data.name?.en?.toLowerCase() || '';
+          const specSw = data.name?.sw?.toLowerCase() || '';
+          const id = String(data.specialization_id || '');
+          filter = filter.toLowerCase();
+          return titleEn.includes(filter) || titleSw.includes(filter) || specEn.includes(filter) || specSw.includes(filter) || id.includes(filter);
+        };
       }
-    );
+    });
 }
 
 
@@ -138,7 +132,7 @@ getProfessional() {
 
 
   // Add new professional
-  addProfessional() {
+  addSpecialiazation() {
     let config = new MatDialogConfig();
     config.disableClose = false;
     config.role = 'dialog';
@@ -147,15 +141,15 @@ getProfessional() {
     config.width = '850px';
     config.panelClass = 'full-screen-modal';
 
-    const dialogRef = this.dialog.open(AddProfessionalComponent, config);
+    const dialogRef = this.dialog.open(AddSpecializationComponent, config);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.getProfessional();
+      this.getProfessionalTitles();
     });
   }
 
   // Update existing professional
-  updateProfessional(data: any) {
+  updateSpecialization(data: any) {
     let config = new MatDialogConfig();
     config.disableClose = false;
     config.role = 'dialog';
@@ -165,10 +159,10 @@ getProfessional() {
     config.panelClass = 'full-screen-modal';
     config.data = { data: data };
 
-    const dialogRef = this.dialog.open(AddProfessionalComponent, config);
+    const dialogRef = this.dialog.open(AddSpecializationComponent, config);
 
     dialogRef.afterClosed().subscribe(() => {
-      this.getProfessional();
+      this.getProfessionalTitles();
     });
   }
 }

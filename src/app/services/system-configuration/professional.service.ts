@@ -29,11 +29,8 @@ export class ProfessionalService {
     return this.http.get(`${this.baseUrl}unBlockProfessional/${id}`);
   }
 
-  public updateProfessional(user:any, id:any): Observable<any>{
-    return this.http.patch(`${this.href}/${id}`,user)
+ public updateProfessional(user:any, id:any): Observable<any>{
+    return this.http.put(`${this.href}/${id}`,user)
   }
 
-  public getShehia(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}getShehias`);
-  }
 }

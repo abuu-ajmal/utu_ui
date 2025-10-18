@@ -1,25 +1,21 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../services/authentication/auth.service';
 import { GlobalConstants } from '@shared/global-constants';
-import Swal from 'sweetalert2';
-import { Router, RouterLink } from '@angular/router';
-
 
 @Component({
-  selector: 'app-portal-header',
+  selector: 'app-user-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-     ReactiveFormsModule,
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule],
+  templateUrl: './user-login.component.html',
+  styleUrl: './user-login.component.scss'
 })
-export class HeaderComponent {
-    loginForm!: FormGroup;
+export class UserLoginComponent {
+  loginForm!: FormGroup;
   loading = false;
   passwordVisible = false;
   isModalOpen = false; // control modal visibility

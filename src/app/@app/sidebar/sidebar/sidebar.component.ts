@@ -105,16 +105,16 @@ export class SidebarComponent {
         },
         {
           type: 'link',
-          name: 'Source Type',
-          link: '/pages/accounts/sourceType',
-          permission: 'Accountant Module',
+          name: 'Education Level',
+          link: '/pages/config/educationlevel',
+          permission: 'View Education Level',
 
         },
         {
           type: 'link',
-          name: 'Category',
-          link: '/pages/accounts/category',
-          permission: 'Accountant Module',
+          name: 'Specialization',
+          link: '/pages/config/specializations',
+          permission: 'View Specialization',
 
         },
          {

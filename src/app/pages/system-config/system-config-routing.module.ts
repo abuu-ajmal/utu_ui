@@ -16,6 +16,16 @@ const routes: Routes = [
   {
     path:'professional',
     loadComponent:()=> import('./professional/view-professional/view-professional.component').then(c=>c.ViewProfessionalComponent)
+  },
+  {
+    path:'educationlevel',
+    loadComponent:()=> import('./educationlevel/view-educationlevel/view-educationlevel.component').then(c=>c.ViewEducationLevelComponent)
+
+  },
+  {
+    path:'specializations',
+    loadComponent:()=> import('./specialization/view-specialization/view-specialization.component').then(c=>c.ViewSpecializationComponent)
+
   }
 ];
 
