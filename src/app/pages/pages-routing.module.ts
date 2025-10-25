@@ -29,6 +29,11 @@ const routes: Routes = [
         path: 'config',
         loadChildren: () => import('./system-config/system-config-routing.module').then(m => m.SystemConfigRoutingModule)
       },
+      {
+        path:'identity',
+        loadComponent:() => import('./identity/viewidentity/viewidentity.component').then(c=>c.ViewidentityComponent)
+
+      },
 
 
 {

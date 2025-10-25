@@ -5,6 +5,7 @@ import { AuthService } from '../../../services/authentication/auth.service';
 import { GlobalConstants } from '@shared/global-constants';
 import Swal from 'sweetalert2';
 import { Router, RouterLink } from '@angular/router';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
@@ -14,11 +15,14 @@ import { Router, RouterLink } from '@angular/router';
     CommonModule,
     FormsModule,
      ReactiveFormsModule,
+     MatIcon
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+
+
     loginForm!: FormGroup;
   loading = false;
   passwordVisible = false;
@@ -49,108 +53,94 @@ export class HeaderComponent {
     });
   }
 
-  // ✅ Toggle password visibility
-  togglePasswordVisibility(): void {
-    this.passwordVisible = !this.passwordVisible;
-  }
+  togglePasswordVisibility() {
+  this.passwordVisible = !this.passwordVisible;
+}
+
+closeModal() {
+  this.isModalOpen = false;
+}
+
+
 
   // ✅ Open/close modal
   openModal() {
     this.isModalOpen = true;
   }
-  closeModal() {
-    this.isModalOpen = false;
-  }
+
 
   // ✅ Submit login
 loginSubmit() {
-  if (this.loginForm.invalid) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Validation Failed',
-      text: 'Please enter valid credentials',
-    });
-    return;
-  }
-
-  this.loading = true;
-
+  // this.matxLoader.open();
   this.authService.loginAuthenticate(this.loginForm.value).subscribe(
-    (response: any) => {
-      this.loading = false;
+    (response) => {
+      // this.matxLoader.close();
 
-      if (response && response.error) {
-        console.error('Server returned an error:', response.error);
-      } else {
-        if (response.statusCode !== 401 && response.data.statusCode === 200) {
-          // Save login info
-          localStorage.setItem('token', `Bearer ${response.data.token}`);
-          localStorage.setItem('isLogin', 'true');
-          localStorage.setItem('user_id', response.data.user_id);
-          localStorage.setItem('full_name', response.data.full_name);
-          localStorage.setItem('login', response.data.login);
-          localStorage.setItem('roles', response.data.roles[0]?.name || 'Default Role');
-          localStorage.setItem('workingStationID', response.data.working_station_id);
-          localStorage.setItem('workingStationName', response.data.working_station_name);
 
-          this.authService.setPermissions(response.data.permissions);
 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          });
+      // Handle valid response
+      const data = response.data;
+      alert(data.statusCode);
+      console.log(data);
+      // if (data.statusCode === 200) {
+      //   // Save token
+      //   localStorage.setItem('token', `Bearer ${data.token}`);
 
-          // Check login_status
-          if (response.data.login_status === true) {
-            Toast.fire({
-              icon: 'success',
-              title: 'Login Successfully',
-            });
+      //   // ✅ CASE 1: Normal login (already changed password)
+      //   if (data.login_status === true) {
+      //     this.authService.setPermissions(data.permissions);
+      //     localStorage.setItem('user_id', data.user_id);
+      //     localStorage.setItem('full_name', data.full_name);
+      //     localStorage.setItem('email', data.email);
+      //     localStorage.setItem('roles', data.roles?.[0]?.name || 'Default Role');
+      //     localStorage.setItem('isLogin', 'true');
 
-            // Close login modal
-            this.isModalOpen = false;
+      //     // Success message
+      //     Swal.fire({
+      //       toast: true,
+      //       position: 'top-end',
+      //       icon: 'success',
+      //       title: 'Login Successfully',
+      //       showConfirmButton: false,
+      //       timer: 3000,
+      //       timerProgressBar: true,
+      //     });
 
-            // Navigate to dashboard/home
-            this.route.navigateByUrl('pages');
-          } else {
-            // Remove login modal and navigate to change-password
-            this.isModalOpen = false;
+      //     this.route.navigateByUrl('pages');
+      //   }
+      // }
+      // // ✅ CASE 2: First-time login → must change password
+      // else if (data.login_status === false) {
+      //   // Save token temporarily for password change
+      //   localStorage.setItem('temp_token', `Bearer ${data.token}`);
+      //   localStorage.setItem('user_id', data.user_id);
 
-            Toast.fire({
-              icon: 'warning',
-              title: 'Please change your password first',
-            });
+      //   Swal.fire({
+      //     toast: true,
+      //     position: 'top-end',
+      //     icon: 'warning',
+      //     title: 'Please change your password first',
+      //     showConfirmButton: false,
+      //     timer: 4000,
+      //     timerProgressBar: true,
+      //   });
 
-            this.route.navigateByUrl('home/change-password');
-          }
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: response.message,
-          });
-          this.isModalOpen = false;
-          this.route.navigateByUrl('/');
-        }
-      }
-    },
-    (error) => {
-      this.loading = false;
-      Swal.fire({
-        title: 'Warning!',
-        text: GlobalConstants.genericErrorConnectFail,
-        icon: 'warning',
-        confirmButtonText: 'OK',
-      });
+      //   // Redirect to change password page
+      //   this.route.navigateByUrl('home/change-password');
+      // }
     }
+
+    // (error) => {
+    //   Swal.fire({
+    //     title: 'Warning!',
+    //     text: 'Connection failed. Please try again later.',
+    //     icon: 'warning',
+    //     confirmButtonText: 'OK',
+    //   });
+    // }
   );
 }
+
 
 
  getHome() {

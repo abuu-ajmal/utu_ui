@@ -77,7 +77,7 @@ export class ChangePasswordComponent {
           confirmButtonColor: "#4690eb",
           confirmButtonText: "Continue"
         });
-        this.route.navigateByUrl("home/login")
+        this.route.navigateByUrl("home")
       }
       else{
         Swal.fire({

@@ -1,0 +1,123 @@
+<div
+  class="relative max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 sm:p-12 mt-6 "
+>
+  <!-- Decorative corner borders -->
+  <div
+    class="absolute top-0 left-0 w-10 h-10 border-t-8 border-l-8 border-blue-700 rounded-tl-2xl"
+  ></div>
+  <div
+    class="absolute top-0 right-0 w-10 h-10 border-t-8 border-r-8 border-blue-700 rounded-tr-2xl"
+  ></div>
+  <div
+    class="absolute bottom-0 left-0 w-10 h-10 border-b-8 border-l-8 border-blue-700 rounded-bl-2xl"
+  ></div>
+  <div
+    class="absolute bottom-0 right-0 w-10 h-10 border-b-8 border-r-8 border-blue-700 rounded-br-2xl"
+  ></div>
+
+  <!-- Header -->
+  <div
+    class="text-center font-bold text-white text-xl py-4 mb-8 rounded-lg"
+    style="background-color: #1E3A8A;"
+  >
+    {{ reasonData ? 'UPDATE IDENTITY' : 'ADD NEW IDENTITY' }}
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="reasonForm" class="space-y-6">
+    <!-- ID Type -->
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+      <mat-label>Identification Type</mat-label>
+      <mat-select formControlName="identity_type">
+        <mat-option value="ZANID">ZANID</mat-option>
+        <mat-option value="NIDA">NIDA</mat-option>
+        <mat-option value="Passport">Passport</mat-option>
+      </mat-select>
+      <mat-error *ngIf="reasonForm.get('identity_type')?.touched && reasonForm.get('identity_type')?.invalid">
+        This field is mandatory
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Identity Number -->
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+      <mat-label>Identity Number</mat-label>
+      <input
+        matInput
+        placeholder="Ex. 123456789 or AB12345"
+        formControlName="identity_number"
+        type="text"
+      />
+      <mat-error *ngIf="reasonForm.get('identity_number')?.touched && reasonForm.get('identity_number')?.invalid">
+        <span *ngIf="reasonForm.get('identity_number')?.errors?.['required']">This field is mandatory</span>
+        <span *ngIf="reasonForm.get('identity_number')?.errors?.['pattern']">Invalid format — only letters and numbers allowed</span>
+      </mat-error>
+    </mat-form-field>
+
+    <!-- File Upload -->
+    <mat-form-field class="w-full" appearance="outline" color="primary">
+      <mat-label>Upload File</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="letter_file"
+        readonly
+        placeholder="No file chosen"
+        (click)="fileInput.click()"
+      />
+      <input
+        type="file"
+        accept=".pdf,.doc,.docx,.jpg,.png"
+        hidden
+        #fileInput
+        (change)="onAttachmentSelected($event)"
+      />
+      <mat-icon
+        matSuffix
+        style="cursor: pointer; color: #1E3A8A;"
+        (click)="fileInput.click()"
+      >
+        attach_file
+      </mat-icon>
+      <mat-error *ngIf="reasonForm.get('letter_file')?.touched && reasonForm.get('letter_file')?.invalid">
+        File is required
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <!-- Buttons -->
+  <mat-dialog-actions align="end" class="mt-8">
+    <button
+      mat-button
+      mat-dialog-close
+      class="text-gray-600 hover:text-gray-800 font-medium"
+    >
+      Cancel
+    </button>
+
+    <button
+      *ngIf="!reasonData"
+      mat-flat-button
+      color="primary"
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+      [disabled]="reasonForm.invalid"
+      (click)="saveIdentity()"
+      class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-2 rounded-lg shadow-md transition-all duration-200"
+    >
+      Save Identity
+    </button>
+
+    <button
+      *ngIf="reasonData"
+      mat-flat-button
+      color="primary"
+      [mat-dialog-close]="true"
+      cdkFocusInitial
+      [disabled]="reasonForm.invalid"
+      (click)="updateIdentity()"
+      class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-8 py-2 rounded-lg shadow-md transition-all duration-200"
+    >
+      Update Identity
+    </button>
+  </mat-dialog-actions>
+</div>

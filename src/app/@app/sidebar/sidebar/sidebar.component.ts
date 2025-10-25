@@ -136,12 +136,12 @@ export class SidebarComponent {
     },
 
      {
-      id: 'dodument1',
+      id: 'identity',
       type: 'Single',  // Changed from 'group' to 'link'
-      name: 'Document',
-      icon: 'document',
-      permission: 'View Document Form',
-      link: '/pages/accounts/documentForm',
+      name: 'Identity',
+      icon: 'identity',
+      permission: 'View Location',
+      link: '/pages/identity',
     },
 
     {
