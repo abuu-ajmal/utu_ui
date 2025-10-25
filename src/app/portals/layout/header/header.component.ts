@@ -71,75 +71,98 @@ closeModal() {
 
   // ✅ Submit login
 loginSubmit() {
-  // this.matxLoader.open();
+  if (this.loginForm.invalid) return;
+
   this.authService.loginAuthenticate(this.loginForm.value).subscribe(
-    (response) => {
-      // this.matxLoader.close();
+    (response: any) => {
+      // 🟡 First login (must change password)
+      if (response.data?.login_status === false && response.data?.first_login === true) {
+        localStorage.setItem('temp_token', `Bearer ${response.data.token}`);
+        localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('full_name', response.data.full_name);
+        localStorage.setItem('email', response.data.email);
 
+        Swal.fire({
+          icon: 'warning',
+          title: 'First Login Detected',
+          text: 'You must change your password before continuing.',
+          showCancelButton: true,
+          confirmButtonText: 'Change Password',
+          cancelButtonText: 'Cancel',
+          reverseButtons: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.closeModal();
+            this.route.navigateByUrl('home/change-password');
+          } else {
+            Swal.close();
+          }
+        });
 
+        return;
+      }
 
-      // Handle valid response
-      const data = response.data;
-      alert(data.statusCode);
-      console.log(data);
-      // if (data.statusCode === 200) {
-      //   // Save token
-      //   localStorage.setItem('token', `Bearer ${data.token}`);
+      // 🟢 Normal successful login
+      if (response.data?.login_status === true && response.data?.statusCode === 200) {
+        localStorage.setItem('token', `Bearer ${response.data.token}`);
+        localStorage.setItem('isLogin', 'true');
+        localStorage.setItem('roles', response.data.roles?.[0]?.name || 'Default Role');
 
-      //   // ✅ CASE 1: Normal login (already changed password)
-      //   if (data.login_status === true) {
-      //     this.authService.setPermissions(data.permissions);
-      //     localStorage.setItem('user_id', data.user_id);
-      //     localStorage.setItem('full_name', data.full_name);
-      //     localStorage.setItem('email', data.email);
-      //     localStorage.setItem('roles', data.roles?.[0]?.name || 'Default Role');
-      //     localStorage.setItem('isLogin', 'true');
+        this.authService.setPermissions(response.data.permissions);
 
-      //     // Success message
-      //     Swal.fire({
-      //       toast: true,
-      //       position: 'top-end',
-      //       icon: 'success',
-      //       title: 'Login Successfully',
-      //       showConfirmButton: false,
-      //       timer: 3000,
-      //       timerProgressBar: true,
-      //     });
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successful',
+          timer: 1500,
+          showConfirmButton: false,
+        });
 
-      //     this.route.navigateByUrl('pages');
-      //   }
-      // }
-      // // ✅ CASE 2: First-time login → must change password
-      // else if (data.login_status === false) {
-      //   // Save token temporarily for password change
-      //   localStorage.setItem('temp_token', `Bearer ${data.token}`);
-      //   localStorage.setItem('user_id', data.user_id);
+        this.route.navigateByUrl('pages');
+        return;
+      }
 
-      //   Swal.fire({
-      //     toast: true,
-      //     position: 'top-end',
-      //     icon: 'warning',
-      //     title: 'Please change your password first',
-      //     showConfirmButton: false,
-      //     timer: 4000,
-      //     timerProgressBar: true,
-      //   });
+      // 🔴 Invalid username or password
+      if (
+        response.statusCode === 401 ||
+        response.data?.statusCode === 401 ||
+        (response.data?.message &&
+          response.data.message.toLowerCase().includes('invalid'))
+      ) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Credentials',
+          text: 'Incorrect username or password. Please try again.',
+        });
+        return;
+      }
 
-      //   // Redirect to change password page
-      //   this.route.navigateByUrl('home/change-password');
-      // }
+      // ⚠️ Other backend errors
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: response.data?.message || 'Something went wrong. Please try again.',
+      });
+    },
+    (error) => {
+      // 🔴 API or server error
+      if (error.status === 401) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Credentials',
+          text: 'Incorrect username or password.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Connection Error',
+          text: 'Failed to connect to server.',
+        });
+      }
     }
-
-    // (error) => {
-    //   Swal.fire({
-    //     title: 'Warning!',
-    //     text: 'Connection failed. Please try again later.',
-    //     icon: 'warning',
-    //     confirmButtonText: 'OK',
-    //   });
-    // }
   );
 }
+
+
 
 
 

@@ -24,9 +24,14 @@ export class UserLoginService {
     return JSON.parse(localStorage.getItem('permissions')!);
   }
 
-  changePassword(data: any) {
-    return this.http.post<any>(`${this.baseUrl}changePassword`,data);
-  }
+  // changePassword(data: any) {
+  //   return this.http.post<any>(`${this.baseUrl}changePassword`,data);
+  // }
+  changePassword(token: string, body: any) {
+  const headers = { Authorization: token };
+  return this.http.post<any>(`${this.baseUrl}changePassword`, body, { headers });
+}
+
 
   private hasRefreshed = false;
 

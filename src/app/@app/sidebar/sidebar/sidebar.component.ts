@@ -140,7 +140,7 @@ export class SidebarComponent {
       type: 'Single',  // Changed from 'group' to 'link'
       name: 'Identity',
       icon: 'identity',
-      permission: 'View Location',
+      permission: 'View Identity',
       link: '/pages/identity',
     },
 

@@ -60,89 +60,58 @@ export class UserLoginComponent {
 
   // ✅ Submit login
 loginSubmit() {
-  if (this.loginForm.invalid) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Validation Failed',
-      text: 'Please enter valid credentials',
-    });
-    return;
-  }
-
-  this.loading = true;
+  if (this.loginForm.invalid) return;
 
   this.authService.loginAuthenticate(this.loginForm.value).subscribe(
     (response: any) => {
-      this.loading = false;
+      // First-login detected
+      if (response.data?.login_status === false && response.data?.first_login === true) {
+        // Save temporary token
+        localStorage.setItem('temp_token', `Bearer ${response.data.token}`);
+        localStorage.setItem('user_id', response.data.user_id);
+        localStorage.setItem('full_name', response.data.full_name);
+        localStorage.setItem('email', response.data.email);
 
-      if (response && response.error) {
-        console.error('Server returned an error:', response.error);
-      } else {
-        if (response.statusCode !== 401 && response.data.statusCode === 200) {
-          // Save login info
-          localStorage.setItem('token', `Bearer ${response.data.token}`);
-          localStorage.setItem('isLogin', 'true');
-          localStorage.setItem('user_id', response.data.user_id);
-          localStorage.setItem('full_name', response.data.full_name);
-          localStorage.setItem('login', response.data.login);
-          localStorage.setItem('roles', response.data.roles[0]?.name || 'Default Role');
-          localStorage.setItem('workingStationID', response.data.working_station_id);
-          localStorage.setItem('workingStationName', response.data.working_station_name);
+        Swal.fire({
+          icon: 'warning',
+          title: 'First Login Detected',
+          text: 'Please change your password first',
+        });
 
-          this.authService.setPermissions(response.data.permissions);
+        // Redirect to change-password page
+        this.route.navigateByUrl('home/change-password');
+        return;
+      }
 
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          });
+      // Normal successful login
+      if (response.data?.login_status === true && response.data.statusCode === 200) {
+        localStorage.setItem('token', `Bearer ${response.data.token}`);
+        localStorage.setItem('isLogin', 'true');
+        localStorage.setItem('roles', response.data.roles[0]?.name || 'Default Role');
 
-          // Check login_status
-          if (response.data.login_status === true) {
-            Toast.fire({
-              icon: 'success',
-              title: 'Login Successfully',
-            });
+        this.authService.setPermissions(response.data.permissions);
 
-            // Close login modal
-            this.isModalOpen = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successful',
+        });
 
-            // Navigate to dashboard/home
-            this.route.navigateByUrl('pages');
-          } else {
-            // Remove login modal and navigate to change-password
-            this.isModalOpen = false;
+        this.route.navigateByUrl('pages');
+      }
 
-            Toast.fire({
-              icon: 'warning',
-              title: 'Please change your password first',
-            });
-
-            this.route.navigateByUrl('home/change-password');
-          }
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: response.message,
-          });
-          this.isModalOpen = false;
-          this.route.navigateByUrl('/');
-        }
+      // Other errors
+      if (response.data?.statusCode === 401 || response.statusCode === 403) {
+        Swal.fire({
+          icon: 'error',
+          title: response.data?.message || 'Login failed',
+        });
       }
     },
     (error) => {
-      this.loading = false;
       Swal.fire({
-        title: 'Warning!',
-        text: GlobalConstants.genericErrorConnectFail,
         icon: 'warning',
-        confirmButtonText: 'OK',
+        title: 'Connection Error',
+        text: 'Failed to connect to server.',
       });
     }
   );
