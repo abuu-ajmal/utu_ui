@@ -34,6 +34,10 @@ const routes: Routes = [
         loadComponent:() => import('./identity/viewidentity/viewidentity.component').then(c=>c.ViewidentityComponent)
 
       },
+      {
+        path:'proff',
+        loadComponent:()=> import('./proff/viewproff/viewproff.component').then(c=>c.ViewproffComponent)
+      },
 
 
 {

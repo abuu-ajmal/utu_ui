@@ -1,0 +1,12 @@
+::ng-deep .custom-dialog-container .mat-mdc-dialog-surface {
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+::ng-deep .mat-mdc-dialog-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

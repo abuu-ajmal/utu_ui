@@ -143,6 +143,14 @@ export class SidebarComponent {
       permission: 'View Identity',
       link: '/pages/identity',
     },
+     {
+      id: 'proff',
+      type: 'Single',  // Changed from 'group' to 'link'
+      name: 'Proffesional',
+      icon: 'proffesional',
+      permission: 'View Professional',
+      link: '/pages/proff',
+    },
 
     {
       id: 'report2',
