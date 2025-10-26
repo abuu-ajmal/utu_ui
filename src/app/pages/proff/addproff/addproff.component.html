@@ -7,15 +7,16 @@
 
   <!-- Title -->
   <h2 class="text-center font-bold text-white text-xl py-4 mb-8 rounded-lg"
-    style="background-color: #1E3A8A;">Add Professional</h2>
+      style="background-color: #1E3A8A;">
+      {{ isUpdateMode ? 'Update Professional' : 'Add Professional' }}
+  </h2>
 
   <!-- Stepper -->
   <mat-horizontal-stepper linear #stepper>
-    <!-- STEP 1 -->
+    <!-- STEP 1: Basic Info -->
     <mat-step [stepControl]="basicForm">
       <form [formGroup]="basicForm">
         <ng-template matStepLabel>Basic Info</ng-template>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Title</mat-label>
@@ -38,48 +39,61 @@
             </mat-select>
           </mat-form-field>
         </div>
-
         <div class="flex justify-end mt-4">
           <button mat-flat-button color="primary" matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
 
-    <!-- STEP 2 -->
+    <!-- STEP 2: Documents -->
     <mat-step [stepControl]="documentForm">
       <form [formGroup]="documentForm">
         <ng-template matStepLabel>Documents</ng-template>
-
         <div class="grid grid-cols-2 gap-4 mt-2">
+
+          <!-- Education Certificate -->
           <div>
             <label class="text-xs font-medium">Education Certificate</label>
             <input type="file" (change)="onFileChange($event, 'education_level_certificate')" accept=".pdf,.jpg,.png"
-              class="text-xs border rounded w-full p-1" />
+                   class="text-xs border rounded w-full p-1" />
             <p class="text-[10px] text-gray-500 mt-1">PDF, JPG, or PNG</p>
+            <div *ngIf="isUpdateMode && profData.education_level_certificate" class="text-sm text-indigo-600 cursor-pointer mt-1"
+                 (click)="viewFile(profData.education_level_certificate)">
+              View Existing File
+            </div>
           </div>
 
+          <!-- CV -->
           <div>
             <label class="text-xs font-medium">CV</label>
             <input type="file" (change)="onFileChange($event, 'cv')" accept=".pdf,.doc,.docx"
-              class="text-xs border rounded w-full p-1" />
+                   class="text-xs border rounded w-full p-1" />
             <p class="text-[10px] text-gray-500 mt-1">PDF or Word</p>
+            <div *ngIf="isUpdateMode && profData.cv" class="text-sm text-indigo-600 cursor-pointer mt-1"
+                 (click)="viewFile(profData.cv)">View Existing File</div>
           </div>
 
+          <!-- License -->
           <div>
             <label class="text-xs font-medium">License</label>
             <input type="file" (change)="onFileChange($event, 'license')" accept=".pdf,.jpg,.png"
-              class="text-xs border rounded w-full p-1" />
+                   class="text-xs border rounded w-full p-1" />
             <p class="text-[10px] text-gray-500 mt-1">Practice license</p>
+            <div *ngIf="isUpdateMode && profData.license" class="text-sm text-indigo-600 cursor-pointer mt-1"
+                 (click)="viewFile(profData.license)">View Existing File</div>
           </div>
 
+          <!-- Work Permit -->
           <div>
             <label class="text-xs font-medium">Work Permit</label>
             <input type="file" (change)="onFileChange($event, 'work_permit')" accept=".pdf,.jpg,.png"
-              class="text-xs border rounded w-full p-1" />
+                   class="text-xs border rounded w-full p-1" />
             <p class="text-[10px] text-gray-500 mt-1">Optional document</p>
+            <div *ngIf="isUpdateMode && profData.work_permit" class="text-sm text-indigo-600 cursor-pointer mt-1"
+                 (click)="viewFile(profData.work_permit)">View Existing File</div>
           </div>
-        </div>
 
+        </div>
         <div class="flex justify-between mt-4">
           <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
           <button mat-flat-button color="primary" matStepperNext>Next</button>
@@ -87,28 +101,29 @@
       </form>
     </mat-step>
 
-    <!-- STEP 3 -->
+    <!-- STEP 3: Photo -->
     <mat-step [stepControl]="photoForm">
       <form [formGroup]="photoForm" (ngSubmit)="onSubmit()">
         <ng-template matStepLabel>Photo</ng-template>
-
         <div class="flex flex-col items-center gap-2 mt-3">
           <label class="text-xs font-medium">Profile Photo</label>
           <input type="file" (change)="onFileChange($event, 'photo')" accept="image/png,image/jpeg"
-            class="text-xs border rounded p-1 w-1/2" />
-          <p class="text-[10px] text-gray-500 text-center">
-            Upload PNG or JPG (passport-size).
-          </p>
+                 class="text-xs border rounded p-1 w-1/2" />
+          <p class="text-[10px] text-gray-500 text-center">Upload PNG or JPG (passport-size).</p>
 
-          <div *ngIf="selectedPhotoPreview" class="mt-2 flex justify-center">
-            <img [src]="selectedPhotoPreview" alt="Preview"
-              class="w-20 h-20 rounded-full object-cover border border-blue-400" />
+          <div *ngIf="selectedPhotoPreview || (isUpdateMode && profData.photo)" class="mt-2 flex justify-center">
+            <img [src]="selectedPhotoPreview || profData.photo" alt="Preview"
+                 class="w-20 h-20 rounded-full object-cover border border-blue-400" />
+            <div *ngIf="isUpdateMode && profData.photo && !selectedPhotoPreview" class="text-sm text-indigo-600 cursor-pointer mt-1"
+                 (click)="viewFile(profData.photo)">View Existing Photo</div>
           </div>
         </div>
 
         <div class="flex justify-between mt-4">
           <button mat-stroked-button color="warn" matStepperPrevious>Back</button>
-          <button mat-flat-button color="primary" type="submit">Save</button>
+          <button mat-flat-button color="primary" type="submit">
+            {{ isUpdateMode ? 'Update' : 'Save' }}
+          </button>
         </div>
       </form>
     </mat-step>

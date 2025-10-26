@@ -35,7 +35,7 @@ import { ProffService } from '../../../services/proffession/proff.service';
   styleUrl: './addproff.component.scss'
 })
 export class AddproffComponent implements OnInit {
-   basicForm!: FormGroup;
+    basicForm!: FormGroup;
   documentForm!: FormGroup;
   photoForm!: FormGroup;
 
@@ -45,19 +45,26 @@ export class AddproffComponent implements OnInit {
 
   selectedPhotoPreview: string | ArrayBuffer | null = null;
   formData = new FormData();
+  isUpdateMode = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<AddproffComponent>,
+    @Inject(MAT_DIALOG_DATA) public profData: any, // data for editing
     private professionalService: ProfessionalService,
     private educationService: EducationlevelService,
-    private proffServices:ProffService,
+    private proffServices: ProffService,
     private specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {
     this.initForms();
     this.loadDropdownData();
+
+    if (this.profData) {
+      this.isUpdateMode = true;
+      this.patchFormData();
+    }
   }
 
   initForms() {
@@ -75,7 +82,7 @@ export class AddproffComponent implements OnInit {
     });
 
     this.photoForm = this.fb.group({
-      photo: ['', Validators.required],
+      photo: [''],
     });
   }
 
@@ -91,6 +98,22 @@ export class AddproffComponent implements OnInit {
     this.specializationService.getAllSpecialization().subscribe((res: any) => {
       this.specializations = res.data;
     });
+  }
+
+  patchFormData() {
+    // Patch basic info
+    this.basicForm.patchValue({
+      professional_title_id: this.profData.professional_title_id,
+      specialization_id: this.profData.specialization_id,
+      education_level_id: this.profData.education_level_id,
+    });
+
+    // Patch file previews if available
+    if (this.profData.photo) {
+      this.selectedPhotoPreview = this.profData.photo.startsWith('http')
+        ? this.profData.photo
+        : this.profData.photo; // adjust if using documentUrl
+    }
   }
 
   onFileChange(event: any, field: string) {
@@ -113,51 +136,60 @@ export class AddproffComponent implements OnInit {
     }
   }
 
-onSubmit() {
-  const combinedData = {
-    ...this.basicForm.value,
-    ...this.documentForm.value,
-    ...this.photoForm.value,
-  };
+  onSubmit() {
+    const combinedData = {
+      ...this.basicForm.value,
+      ...this.documentForm.value,
+      ...this.photoForm.value,
+    };
 
-  Object.keys(combinedData).forEach((key) => {
-    if (this.formData.has(key)) return;
-    this.formData.append(key, combinedData[key]);
-  });
+    Object.keys(combinedData).forEach((key) => {
+      if (this.formData.has(key)) return;
+      this.formData.append(key, combinedData[key]);
+    });
 
-  this.proffServices.addProffessional(this.formData).subscribe({
-    next: (res) => {
-      if (res.statusCode === 200 || res.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Professional Added Successfully!',
-        });
-        this.dialogRef.close(true);
-      }
-    },
-    error: (err) => {
-      console.error(err);
+    // Choose correct API call
+    const request$ = this.isUpdateMode
+      ? this.proffServices.updateProffessional(this.profData.professional_id, this.formData)
+      : this.proffServices.addProffessional(this.formData);
 
-      if (err.statusCode === 409) {
-        // Duplicate professional title
-        Swal.fire({
-          icon: 'error',
-          title: 'Duplicate Professional',
-          text: err.error?.message || 'This user already has this professional title.',
-        });
-      } else {
-        // Other errors
-        Swal.fire({
-          icon: 'error',
-          title: 'Failed to save professional',
-          text: err.error?.message || 'Something went wrong. Please try again.',
-        });
-      }
-    },
-  });
-}
+    request$.subscribe({
+      next: (res) => {
+        if (res.statusCode === 200 || res.success) {
+          Swal.fire({
+            icon: 'success',
+            title: this.isUpdateMode
+              ? 'Professional Updated Successfully!'
+              : 'Professional Added Successfully!',
+          });
+          this.dialogRef.close(true);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        if (err.status === 409) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Duplicate Professional',
+            text: err.error?.message || 'This user already has this professional title.',
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: this.isUpdateMode
+              ? 'Failed to update professional'
+              : 'Failed to save professional',
+            text: err.error?.message || 'Something went wrong. Please try again.',
+          });
+        }
+      },
+    });
+  }
 
-
+  viewFile(fileUrl: string) {
+    if (!fileUrl) return;
+    window.open(fileUrl, '_blank');
+  }
 
   closeDialog() {
     this.dialogRef.close(false);

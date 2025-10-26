@@ -29,8 +29,8 @@ private baseUrl: string = `${environment.baseUrl}`;
     return this.http.get(`${this.baseUrl}unBlockProffessional/${id}`);
   }
 
- public updateProffessional(user:any, id:any): Observable<any>{
-    return this.http.put(`${this.href}/${id}`,user)
+ public updateProffessional(professionalId: number, formData: FormData){
+    return this.http.post(`${this.href}/update/${professionalId}`,formData);
   }
 
 }

@@ -88,9 +88,8 @@ addProfessional() {
   const dialogRef = this.dialog.open(AddproffComponent, {
     width: '90vw',          // 90% of viewport width (responsive)
     maxWidth: '1200px',     // maximum width on large screens
-    // height: '90vh',         // 90% of viewport height
     panelClass: 'custom-dialog-container', // optional for extra style
-    disableClose: true,
+    disableClose: false,
   });
 
   dialogRef.afterClosed().subscribe((result) => {
@@ -100,5 +99,22 @@ addProfessional() {
     }
   });
 }
+
+updateProfessional(prof: any) {
+  const dialogRef = this.dialog.open(AddproffComponent, {
+    width: '90vw',       // large modal
+    maxWidth: '1200px',
+    disableClose: false,
+    data: prof,          // pass professional data for editing
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      console.log('Professional updated:', result);
+      this.getProfessionals(); // reload list
+    }
+  });
+}
+
 
 }
