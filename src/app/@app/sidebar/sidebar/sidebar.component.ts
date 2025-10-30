@@ -126,9 +126,9 @@ export class SidebarComponent {
         },
         {
           type: 'link',
-          name: 'Document Type',
-          link: '/pages/accounts/documentCategory',
-          permission: 'Accountant Module',
+          name: 'Services',
+          link: '/pages/proservices',
+          permission: 'View Service',
 
         },
 

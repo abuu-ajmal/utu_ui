@@ -33,4 +33,10 @@ private baseUrl: string = `${environment.baseUrl}`;
     return this.http.post(`${this.href}/update/${professionalId}`,formData);
   }
 
+  deleteAssignedService(professionalId: number, serviceId: number) {
+  const url = `${this.baseUrl}services/${professionalId}/remove-service/${serviceId}`;
+  return this.http.delete(url);
+}
+
+
 }

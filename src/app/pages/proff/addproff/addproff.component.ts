@@ -35,9 +35,10 @@ import { ProffService } from '../../../services/proffession/proff.service';
   styleUrl: './addproff.component.scss'
 })
 export class AddproffComponent implements OnInit {
-    basicForm!: FormGroup;
+  basicForm!: FormGroup;
   documentForm!: FormGroup;
   photoForm!: FormGroup;
+  filteredSpecializations: any[] = [];
 
   professionalTitles: any[] = [];
   specializations: any[] = [];
@@ -87,34 +88,83 @@ export class AddproffComponent implements OnInit {
   }
 
   loadDropdownData() {
-    this.professionalService.getAllProfessional().subscribe((res: any) => {
-      this.professionalTitles = res.data;
-    });
-
-    this.educationService.getAllEducationLevel().subscribe((res: any) => {
-      this.educationLevels = res.data;
-    });
-
-    this.specializationService.getAllSpecialization().subscribe((res: any) => {
+  this.specializationService.getAllSpecialization().subscribe((res: any) => {
+    if (res.success && res.data) {
       this.specializations = res.data;
-    });
-  }
+
+      // Extract unique professional titles from nested data
+      const titlesMap = new Map();
+      res.data.forEach((item: any) => {
+        if (item.title && !titlesMap.has(item.title.professional_title_id)) {
+          titlesMap.set(item.title.professional_title_id, item.title);
+        }
+      });
+      this.professionalTitles = Array.from(titlesMap.values());
+    }
+  });
+
+  this.educationService.getAllEducationLevel().subscribe((res: any) => {
+    this.educationLevels = res.data;
+  });
+}
+
+
+  // loadDropdownData() {
+  //   this.professionalService.getAllProfessional().subscribe((res: any) => {
+  //     this.professionalTitles = res.data;
+  //   });
+
+  //   this.educationService.getAllEducationLevel().subscribe((res: any) => {
+  //     this.educationLevels = res.data;
+  //   });
+
+  //   this.specializationService.getAllSpecialization().subscribe((res: any) => {
+  //     this.specializations = res.data;
+  //   });
+  // }
 
   patchFormData() {
-    // Patch basic info
-    this.basicForm.patchValue({
-      professional_title_id: this.profData.professional_title_id,
-      specialization_id: this.profData.specialization_id,
-      education_level_id: this.profData.education_level_id,
-    });
+  this.basicForm.patchValue({
+    professional_title_id: this.profData.professional_title_id,
+    specialization_id: this.profData.specialization_id,
+    education_level_id: this.profData.education_level_id,
+  });
 
-    // Patch file previews if available
-    if (this.profData.photo) {
-      this.selectedPhotoPreview = this.profData.photo.startsWith('http')
-        ? this.profData.photo
-        : this.profData.photo; // adjust if using documentUrl
-    }
+  // Filter specializations for the selected title
+  this.onTitleChange(this.profData.professional_title_id);
+
+  if (this.profData.photo) {
+    this.selectedPhotoPreview = this.profData.photo.startsWith('http')
+      ? this.profData.photo
+      : this.profData.photo;
   }
+}
+
+
+  // patchFormData() {
+
+  //   this.basicForm.patchValue({
+  //     professional_title_id: this.profData.professional_title_id,
+  //     specialization_id: this.profData.specialization_id,
+  //     education_level_id: this.profData.education_level_id,
+  //   });
+
+
+  //   if (this.profData.photo) {
+  //     this.selectedPhotoPreview = this.profData.photo.startsWith('http')
+  //       ? this.profData.photo
+  //       : this.profData.photo;
+  //   }
+  // }
+
+  onTitleChange(selectedTitleId: number) {
+  this.filteredSpecializations = this.specializations.filter(
+    (s: any) => s.professional_title_id === selectedTitleId
+  );
+
+  // Reset specialization field
+  this.basicForm.patchValue({ specialization_id: '' });
+}
 
   onFileChange(event: any, field: string) {
     const file = event.target.files[0];

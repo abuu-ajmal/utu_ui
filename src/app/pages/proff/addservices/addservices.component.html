@@ -1,0 +1,36 @@
+<mat-card class="p-6">
+  <h2 class="text-lg font-semibold text-center mb-4">
+    Assign Services to {{ professional?.title }}
+  </h2>
+
+  <div class="mb-4">
+    <p><strong>Title:</strong> {{ professional?.title }}</p>
+    <p><strong>Specialization:</strong> {{ professional?.specialization }}</p>
+  </div>
+
+  <form [formGroup]="basicForm" (ngSubmit)="onSubmit()">
+    <div class="grid grid-cols-2 gap-2">
+      <div *ngFor="let service of allServices">
+        <label>
+          <input
+            type="checkbox"
+            [value]="service.service_id"
+            (change)="toggleServiceSelection(service.service_id, $event)"
+          />
+          {{ service.service_name }}
+        </label>
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-end gap-3">
+      <button mat-stroked-button color="warn" (click)="closeDialog()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit">Save</button>
+    </div>
+  </form>
+</mat-card>
+
+<ng-template #loading>
+  <div class="flex justify-center items-center h-40">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-template>

@@ -20,6 +20,7 @@ import { PermissionService } from '../../../services/authentication/permission.s
 import { ProffService } from '../../../services/proffession/proff.service';
 import Swal from 'sweetalert2';
 import { AddproffComponent } from '../addproff/addproff.component';
+import { AddservicesComponent } from '../addservices/addservices.component';
 
 @Component({
   selector: 'app-viewproff',
@@ -115,6 +116,61 @@ updateProfessional(prof: any) {
     }
   });
 }
+
+addServices(prof: any): void {
+  const dialogRef = this.dialog.open(AddservicesComponent, {
+    // width: '90vw',       // large modal
+    maxWidth: '1000px',
+    disableClose: false,
+    data: prof,          // pass professional data for editing
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      console.log('Professional updated:', result);
+      this.getProfessionals(); // reload list
+    }
+  });
+}
+
+deleteService(professionalId: number, serviceId: number) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This will remove the selected service from this professional.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.professionalService
+        .deleteAssignedService(professionalId, serviceId)
+        .subscribe({
+          next: (res: any) => {
+            Swal.fire('Deleted!', 'Service removed successfully.', 'success');
+
+            // Update the local UI
+            this.professionals = this.professionals.map((p: any) => {
+              if (p.professional_id === professionalId) {
+                p.services = p.services.filter(
+                  (s: any) =>
+                    s.service_id !== serviceId && s.id !== serviceId
+                );
+              }
+              return p;
+            });
+          },
+          error: (err) => {
+            console.error('Error deleting service:', err);
+            Swal.fire('Error', 'Failed to remove service.', 'error');
+          },
+        });
+    }
+  });
+}
+
+
 
 
 }

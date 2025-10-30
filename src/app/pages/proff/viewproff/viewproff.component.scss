@@ -1,0 +1,73 @@
+/* Full-width professional card styling */
+.professional-card {
+  width: 100%;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .top-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+
+    img {
+      width: 6rem;
+      height: 6rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #6366f1;
+    }
+
+    .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: #6b7280;
+      }
+    }
+  }
+
+  .content-section {
+    padding: 1.5rem;
+    background: #fff;
+
+    h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
+    .documents,
+    .services {
+      margin-top: 1rem;
+    }
+  }
+}

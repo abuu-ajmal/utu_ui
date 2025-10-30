@@ -70,11 +70,11 @@ export class HeaderComponent implements OnInit{
   constructor(private route:Router,){}
 
   fullName:any;
-  emails:any;
+  roles:any;
 
   ngOnInit(): void {
     this.fullName = localStorage.getItem('full_name');
-    this.emails = localStorage.getItem('email');
+    this.roles = localStorage.getItem('roles');
   }
 
   logoutHead(){

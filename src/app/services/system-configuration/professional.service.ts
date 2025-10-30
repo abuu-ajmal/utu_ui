@@ -33,4 +33,8 @@ export class ProfessionalService {
     return this.http.put(`${this.href}/${id}`,user)
   }
 
+   public getProfessionalById(id:number){
+    return this.http.get(`${this.baseUrl}services/by-professional/${id}`);
+  }
+
 }

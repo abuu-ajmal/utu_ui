@@ -38,6 +38,11 @@ const routes: Routes = [
         path:'proff',
         loadComponent:()=> import('./proff/viewproff/viewproff.component').then(c=>c.ViewproffComponent)
       },
+      {
+        path:'proservices',
+        loadComponent:() => import('./proservices/viewproservices/viewproservices.component').then(c=>c.ViewproservicesComponent)
+
+      },
 
 
 {

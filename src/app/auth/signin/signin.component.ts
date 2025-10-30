@@ -74,7 +74,7 @@ export class SigninComponent implements OnInit {
             if(response.data.login_status === true){
               this.authService.setPermissions(response.data.permissions);
               localStorage.setItem("user_id", response.data.user_id);
-              localStorage.setItem("full_name", response.data.full_name);
+             console.log('hiii ',localStorage.setItem("full_name", response.data.full_name));
               localStorage.setItem("login", response.data.login);
               localStorage.setItem("workingStationID", response.data.working_station_id);
               localStorage.setItem("workingStationName", response.data.working_station_name);

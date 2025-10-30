@@ -18,19 +18,29 @@
       <form [formGroup]="basicForm">
         <ng-template matStepLabel>Basic Info</ng-template>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Title</mat-label>
-            <mat-select formControlName="professional_title_id">
-              <mat-option *ngFor="let t of professionalTitles" [value]="t.professional_title_id">{{ t.title }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+        <!-- Professional Title -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Professional Title</mat-label>
+          <mat-select
+            formControlName="professional_title_id"
+            (selectionChange)="onTitleChange($event.value)"
+          >
+            <mat-option *ngFor="let t of professionalTitles" [value]="t.professional_title_id">
+              {{ t.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Specialization</mat-label>
-            <mat-select formControlName="specialization_id">
-              <mat-option *ngFor="let s of specializations" [value]="s.specialization_id">{{ s.name }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+<!-- Specialization -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Specialization</mat-label>
+        <mat-select formControlName="specialization_id">
+          <mat-option *ngFor="let s of filteredSpecializations" [value]="s.specialization_id">
+            {{ s.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
 
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Education Level</mat-label>
