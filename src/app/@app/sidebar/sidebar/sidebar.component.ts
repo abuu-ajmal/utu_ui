@@ -131,6 +131,13 @@ export class SidebarComponent {
           permission: 'View Service',
 
         },
+        {
+          type: 'link',
+          name: 'Facility Services',
+          link: '/pages/config/servicesfacility',
+          permission: 'View Facility Service',
+
+        },
 
       ]
     },

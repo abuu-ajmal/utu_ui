@@ -26,6 +26,11 @@ const routes: Routes = [
     path:'specializations',
     loadComponent:()=> import('./specialization/view-specialization/view-specialization.component').then(c=>c.ViewSpecializationComponent)
 
+  },
+  {
+    path:'servicesfacility',
+    loadComponent:()=>import('./facilityservices/viewfacilityservices/viewfacilityservices.component').then(c=>c.ViewfacilityservicesComponent)
+
   }
 ];
 

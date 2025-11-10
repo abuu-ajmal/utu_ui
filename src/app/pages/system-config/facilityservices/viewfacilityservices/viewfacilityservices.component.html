@@ -1,0 +1,101 @@
+<div class="p-10 space-y-8" *ngIf="permission.parmissionMatched(['View Facility Service'])">
+  <div class="flex items-center justify-between">
+    <h1 class="text-lg font-bold">Facility Services</h1>
+  </div>
+  <div class="w-full">
+
+    <div class="relative h-full rounded-lg border group dark:border-inverse p-4">
+      <div class="font-semibold pb-2.5 border-b-2 border-b-secondary-400">View Facility Service</div>
+      <div class="mt-4 flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <div class="size-9 rounded-full border bg-surface flex flex items-center justify-center" (click)="renew()" matTooltip="Refresh">
+            <mat-icon class="font-icon visibilityData">refresh</mat-icon>
+          </div>
+          <emr-v-divider></emr-v-divider>
+          <input type="text" placeholder="Search..."
+                 class="border-b h-10 w-96 text-sm bg-transparent dark:border-b-inverse outline-0 focus-within:border-neutral-950" matInput (keyup)="applyFilter($event)" #input>
+        </div>
+        <div class="flex space-x-2">
+          <button mat-flat-button (click) = "addFacilityServices()"  *ngIf="permission.parmissionMatched(['Create Facility Service'])">
+            <mat-icon class="font-icon">add</mat-icon>Add Facility
+          </button>
+          </div>
+      </div>
+
+      <div class="border dark:border-inverse rounded-lg overflow-hidden mt-4">
+        <table mat-table [dataSource]="dataSource" class="not-prose">
+          <!-- Position Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> No. </th>
+            <td mat-cell *matCellDef="let element,let i = index"> {{i+1}} </td>
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> Product Type </th>
+            <td mat-cell *matCellDef="let element,"> {{element.type}} </td>
+          </ng-container>
+
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> Facility Name </th>
+            <td mat-cell *matCellDef="let element,"> {{element.name}} </td>
+          </ng-container>
+
+           <ng-container matColumnDef="descr">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> Description </th>
+            <td mat-cell *matCellDef="let element,"> {{element.description}} </td>
+          </ng-container>
+
+           <ng-container matColumnDef="sku">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> sku </th>
+            <td mat-cell *matCellDef="let element,"> {{element.sku}} </td>
+          </ng-container>
+
+           <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> Quantity </th>
+            <td mat-cell *matCellDef="let element,"> {{element.quantity}} </td>
+          </ng-container>
+
+
+
+          <!-- Weight Column -->
+          <!-- <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-neutral-500 dark:text-neutral-400"> Action </th>
+            <td mat-cell *matCellDef="let element">
+              <emr-segmented theme="simple" class="-mx-2">
+                <emr-segmented-button *ngIf="!element.deleted_at" value="edit_squareData">
+                  <span class="size-9 rounded-full border bg-surface flex items-center justify-center" (click)="updateReasons(element)" *ngIf="permission.parmissionMatched(['Update Reason'])" matTooltip="Edit">
+                    <mat-icon class="font-icon edit_squareData">edit_square</mat-icon>
+                  </span>
+                </emr-segmented-button>
+                <emr-segmented-button value="edit_squareData">
+                  <mat-slide-toggle
+                    [checked]="!element.deleted_at"
+                    (toggleChange)="confirmBlock(element)"
+                    color="primary">
+                  </mat-slide-toggle>
+                </emr-segmented-button>
+              </emr-segmented>
+            </td>
+          </ng-container> -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell tablefoter" colspan="10" >No data matching the filter " {{input.value}} "</td>
+          </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[10, 20, 100]"
+                       showFirstLastButtons
+                       aria-label="Select page of country" class="pt-3">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
