@@ -1,0 +1,44 @@
+<div class="p-6">
+  <h2 class="text-2xl font-extrabold text-blue-700 mb-6 text-center flex items-center justify-center gap-2">
+    <mat-icon class="text-4xl">add_circle</mat-icon>
+    Add Available Slots
+  </h2>
+
+  <div *ngIf="loading" class="flex flex-col items-center justify-center py-10">
+    <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+    <p class="text-gray-500 mt-4">Loading slots...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="form" class="space-y-6">
+<div *ngIf="loading" class="text-center py-10">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+
+<mat-form-field appearance="outline" class="w-full" *ngIf="!loading">
+  <mat-label>Select Slots</mat-label>
+  <mat-select formControlName="slot_id" multiple>
+    <mat-option *ngFor="let s of allSlots" [value]="s.slot_id">
+      {{ s.start_time }} - {{ s.end_time }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="form.get('slot_id')?.hasError('required')">
+    Please select at least one slot
+  </mat-error>
+</mat-form-field>
+
+
+
+
+    <div class="flex justify-end gap-4">
+      <button mat-stroked-button color="warn" (click)="closeDialog()">
+        <mat-icon class="mr-1">cancel</mat-icon>
+        Cancel
+      </button>
+
+      <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon class="mr-1">save</mat-icon>
+        Save
+      </button>
+    </div>
+  </form>
+</div>

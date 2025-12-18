@@ -150,6 +150,22 @@ export class SidebarComponent {
       permission: 'View Identity',
       link: '/pages/identity',
     },
+    {
+      id: 'slots',
+      type: 'Single',  // Changed from 'group' to 'link'
+      name: 'Slots',
+      icon: 'slots',
+      permission: 'View Time',
+      link: '/pages/slots',
+    },
+     {
+      id: 'available',
+      type: 'Single',  // Changed from 'group' to 'link'
+      name: 'Available',
+      icon: 'available',
+      permission: 'View Professional',
+      link: '/pages/setslots',
+    },
      {
       id: 'proff',
       type: 'Single',  // Changed from 'group' to 'link'

@@ -43,6 +43,16 @@ const routes: Routes = [
         loadComponent:() => import('./proservices/viewproservices/viewproservices.component').then(c=>c.ViewproservicesComponent)
 
       },
+      {
+        path:'slots',
+        loadComponent:()=> import('./slots/viewslots/viewslots.component').then(c=>c.ViewslotsComponent)
+
+      },
+      {
+        path:'setslots',
+        loadComponent:()=>import('./slots/setslots/setslots.component').then(c=>c.SetslotsComponent)
+
+      },
 
 
 {

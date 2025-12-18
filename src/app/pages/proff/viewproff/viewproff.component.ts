@@ -117,6 +117,7 @@ updateProfessional(prof: any) {
   });
 }
 
+
 addServices(prof: any): void {
   const dialogRef = this.dialog.open(AddservicesComponent, {
     // width: '90vw',       // large modal

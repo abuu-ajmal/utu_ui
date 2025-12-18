@@ -1,0 +1,82 @@
+<div class="p-6">
+
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-extrabold text-blue-700">
+      <mat-icon class="text-4xl align-middle mr-2">schedule</mat-icon>
+      Available Slots
+    </h2>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="rounded-2xl shadow-md px-5 py-2 flex items-center gap-2"
+      (click)="openAddSlotsDialog()"
+    >
+      <mat-icon>add_circle</mat-icon>
+      Add Available Slots
+    </button>
+  </div>
+
+  <div *ngIf="slots.length === 0" class="text-center text-gray-500 py-10">
+    <mat-icon class="text-5xl mb-3 text-gray-400">event_busy</mat-icon>
+    <p>No slots available</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <mat-card
+      *ngFor="let item of slots"
+      class="shadow-xl rounded-3xl border border-gray-200 bg-white
+             hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+    >
+      <mat-card-header class="flex items-center gap-3">
+        <mat-icon class="text-blue-600">event</mat-icon>
+
+        <div>
+          <mat-card-title class="text-xl font-bold text-blue-700">
+            {{ getDayName(item.day_of_week) }}
+          </mat-card-title>
+          <mat-card-subtitle class="text-gray-500">
+            Slot ID: {{ item.slot.slot_id }}
+          </mat-card-subtitle>
+        </div>
+      </mat-card-header>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-content class="mt-4 space-y-3 text-gray-700">
+        <p class="flex items-center gap-2">
+          <mat-icon class="text-green-600">access_time</mat-icon>
+          <strong>Time:</strong>
+          {{ item.slot.start_time }} - {{ item.slot.end_time }}
+        </p>
+
+        <span
+          class="px-4 py-1 rounded-full text-white text-xs font-semibold shadow-md"
+          [ngClass]="{
+            'bg-green-600': item.status === 1,
+            'bg-red-500': item.status === 0
+          }"
+        >
+          {{ item.status === 1 ? 'Active' : 'Inactive' }}
+        </span>
+      </mat-card-content>
+       <mat-card-actions class="flex justify-end p-4">
+        <button
+          mat-mini-fab
+          color="warn"
+          class="shadow-md hover:shadow-xl"
+          (click)="onDelete(item.slot_id)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+
+      <!-- <mat-card-actions class="p-4 flex justify-end">
+        <button mat-mini-fab color="warn" matTooltip="Delete Slot">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions> -->
+    </mat-card>
+  </div>
+
+</div>
